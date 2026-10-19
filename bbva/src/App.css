@@ -2,6 +2,7 @@
   --bbva-blue: #06158f;
   --bbva-ink: #07145e;
   --card: #e2e9ff;
+  --sans: Arial, Helvetica, sans-serif;
 }
 
 #root {
@@ -286,11 +287,15 @@ h1 {
   align-items: center;
   flex-direction: column;
   gap: 18px;
+  padding: 0;
+  border: 0;
+  background: transparent;
   color: #09217f;
   font-size: 23px;
   font-weight: 700;
   line-height: 1.25;
   text-align: center;
+  cursor: pointer;
   text-decoration: none;
 }
 
