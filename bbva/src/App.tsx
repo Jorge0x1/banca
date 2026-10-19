@@ -62,13 +62,12 @@ function App() {
   const [loginError, setLoginError] = useState('')
   const [loginSuccess, setLoginSuccess] = useState('')
 
-  // Función para redirigir/abrir la App
+  // Función síncrona para redirección directa
   const openApp = () => {
     const playStorePackage = 'com.bbva.bancomer'
     const appStoreId = '382878482'
 
     const androidIntent = `intent://open#Intent;scheme=bbva;package=${playStorePackage};S.browser_fallback_url=https://play.google.com/store/apps/details?id=${playStorePackage};end`
-    const iosScheme = 'bbva://'
     const iosAppStoreUrl = `https://apps.apple.com/app/id${appStoreId}`
 
     const userAgent = navigator.userAgent || navigator.vendor
@@ -78,14 +77,10 @@ function App() {
     if (isAndroid) {
       window.location.href = androidIntent
     } else if (isIOS) {
-      window.location.href = iosScheme
-
-      const start = Date.now()
+      window.location.href = `bbva://`
       setTimeout(() => {
-        if (Date.now() - start < 2000) {
-          window.location.href = iosAppStoreUrl
-        }
-      }, 1500)
+        window.location.href = iosAppStoreUrl
+      }, 500)
     } else {
       window.open(`https://play.google.com/store/apps/details?id=${playStorePackage}`, '_blank')
     }
@@ -125,7 +120,7 @@ function App() {
     setPhone('')
     setPassword('')
 
-    // Redirigir a la app inmediatamente después de un inicio de sesión exitoso
+    // Redirección inmediata tras respuesta de la función
     openApp()
   }
 
