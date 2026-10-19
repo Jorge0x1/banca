@@ -1,0 +1,376 @@
+:root {
+  --bbva-blue: #06158f;
+  --bbva-ink: #07145e;
+  --card: #e2e9ff;
+}
+
+#root {
+  min-height: 100svh;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.app-shell {
+  min-height: 100svh;
+  box-sizing: border-box;
+  padding: 0 30px 42px;
+  color: var(--bbva-ink);
+  background:
+    radial-gradient(circle at 0% 13%, rgba(97, 180, 232, 0.8), transparent 22%),
+    radial-gradient(circle at 100% 74%, rgba(38, 180, 236, 0.8), transparent 25%),
+    linear-gradient(135deg, #1266b0 0%, #0715a0 38%, #031275 75%, #071ba6 100%);
+}
+
+.topbar {
+  max-width: 678px;
+  margin: 0 auto;
+  padding: 42px 0 88px;
+  color: #fff;
+}
+
+.brand-row {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 42px;
+}
+
+.brand {
+  font: 500 54px/1 var(--sans);
+  letter-spacing: -4px;
+}
+
+.menu-button {
+  position: absolute;
+  right: 0;
+  display: grid;
+  width: 80px;
+  height: 80px;
+  place-items: center;
+  border: 3px solid #9da6ff;
+  border-radius: 50%;
+  background: rgba(21, 38, 159, 0.4);
+  color: #95c7ff;
+  cursor: pointer;
+}
+
+.menu-button svg {
+  width: 48px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.5;
+}
+
+.login-card {
+  width: min(100%, 678px);
+  box-sizing: border-box;
+  margin: 0 auto;
+  padding: 38px 30px 42px;
+  border-radius: 27px;
+  background: var(--card);
+  box-shadow: 0 14px 30px rgba(0, 0, 45, 0.12);
+}
+
+h1 {
+  margin: 0 0 34px;
+  color: var(--bbva-ink);
+  font: 700 clamp(2.7rem, 7vw, 3.45rem)/1.05 Georgia, 'Times New Roman', serif;
+  letter-spacing: -2px;
+}
+
+.login-button {
+  width: 100%;
+  padding: 29px 20px;
+  border: 0;
+  border-radius: 15px;
+  background: var(--bbva-blue);
+  color: #fff;
+  font: 700 28px/1 var(--sans);
+  cursor: pointer;
+}
+
+.login-button:hover,
+.login-button:focus-visible {
+  background: #071cae;
+}
+
+.login-screen {
+  min-height: 100svh;
+  box-sizing: border-box;
+  padding: 17px 14px;
+  background: #fff;
+  color: #07145e;
+}
+
+.login-screen__header {
+  position: relative;
+  display: flex;
+  min-height: 53px;
+  align-items: center;
+  justify-content: center;
+}
+
+.login-screen__header h1 {
+  margin: 0;
+  color: #07145e;
+  font: 700 14px/1 var(--sans);
+  letter-spacing: 0;
+}
+
+.close-button {
+  position: absolute;
+  top: 0;
+  right: 0;
+  display: grid;
+  width: 42px;
+  height: 42px;
+  place-items: center;
+  border: 0;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 4px 17px rgba(0, 0, 0, 0.08);
+  color: #071e91;
+  cursor: pointer;
+}
+
+.close-button span {
+  font: 300 36px/0.8 Arial, sans-serif;
+  transform: translateY(-2px);
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-top: 14px;
+}
+
+.login-form label {
+  display: block;
+}
+
+.login-form input {
+  width: 100%;
+  height: 50px;
+  box-sizing: border-box;
+  padding: 0 13px;
+  border: 2px solid #58647c;
+  border-radius: 7px;
+  outline: none;
+  background: #f8fafb;
+  color: #07145e;
+  font: 400 14px/1 var(--sans);
+}
+
+.login-form input:focus {
+  border-color: #071e91;
+}
+
+.login-form input::placeholder {
+  color: #687287;
+  opacity: 1;
+}
+
+.password-field {
+  position: relative;
+}
+
+.password-field input {
+  padding-right: 48px;
+}
+
+.password-field button {
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  display: grid;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  place-items: center;
+  border: 0;
+  background: transparent;
+  color: #071e91;
+  cursor: pointer;
+  transform: translateY(-50%);
+}
+
+.password-field svg {
+  width: 20px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+}
+
+.forgot-password {
+  margin-top: 10px;
+  color: #071e91;
+  font-size: 14px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.submit-login {
+  width: 100%;
+  margin-top: 5px;
+  padding: 15px;
+  border: 0;
+  border-radius: 7px;
+  background: #071e91;
+  color: #fff;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.submit-login:disabled {
+  cursor: wait;
+  opacity: 0.65;
+}
+
+.login-error {
+  margin: 0;
+  color: #a31515;
+  font-size: 13px;
+}
+
+.login-success {
+  margin: 0;
+  color: #16733a;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.forgot-password:hover,
+.forgot-password:focus-visible {
+  text-decoration: underline;
+}
+
+.first-time {
+  margin: 36px 0 10px;
+  font-size: 26px;
+  line-height: 1.25;
+}
+
+.access-key {
+  color: #09269b;
+  font-size: 27px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.access-key:hover,
+.access-key:focus-visible {
+  text-decoration: underline;
+}
+
+.quick-actions {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+  margin-top: 54px;
+}
+
+.quick-action {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  gap: 18px;
+  color: #09217f;
+  font-size: 23px;
+  font-weight: 700;
+  line-height: 1.25;
+  text-align: center;
+  text-decoration: none;
+}
+
+.quick-action__icon {
+  display: grid;
+  width: 104px;
+  height: 104px;
+  place-items: center;
+  border-radius: 50%;
+  background: #f8fafc;
+}
+
+.quick-action svg {
+  width: 61px;
+  height: 61px;
+  fill: none;
+  stroke: var(--bbva-blue);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 3;
+}
+
+@media (max-width: 560px) {
+  .app-shell {
+    padding: 0 14px 28px;
+  }
+
+  .topbar {
+    padding: 25px 0 58px;
+  }
+
+  .brand-row {
+    margin-top: 30px;
+  }
+
+  .brand {
+    font-size: 42px;
+  }
+
+  .menu-button {
+    width: 62px;
+    height: 62px;
+  }
+
+  .menu-button svg {
+    width: 37px;
+  }
+
+  .login-card {
+    padding: 31px 29px 35px;
+    border-radius: 26px;
+  }
+
+  .login-button {
+    padding: 25px 15px;
+    font-size: 22px;
+  }
+
+  .first-time,
+  .access-key {
+    font-size: 21px;
+  }
+
+  .quick-actions {
+    gap: 8px;
+    margin-top: 44px;
+  }
+
+  .quick-action {
+    gap: 13px;
+    font-size: 17px;
+  }
+
+  .quick-action__icon {
+    width: 80px;
+    height: 80px;
+  }
+
+  .quick-action svg {
+    width: 48px;
+    height: 48px;
+  }
+}
